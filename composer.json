@@ -1,5 +1,5 @@
 {
-  "name": "sunnysideup/silverstripe-mailcapture",
+  "name": "sunnysideup/mailcapture",
   "description": "Capture emails being sent",
   "type": "silverstripe-vendormodule",
   "keywords": [
