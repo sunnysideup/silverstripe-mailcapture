@@ -24,26 +24,16 @@ class CapturedEmail extends DataObject
     public static function record_email(Email $email)
     {
         // function for processing from,to, cc, bcc
-        $formatEmailAddress = function (array $emails): string {
-            $return = '';
-            foreach ($emails as $address => $title) {
-                $return .= "$address";
-                if ($title) {
-                    $return .= " <$title>";
-                }
-                $return .= ", ";
-            }
-            return trim(trim(trim($return), ','));
-        };
+
 
         $mail = CapturedEmail::create();
         $mail->registerShutdownFunction();
         $mail->Subject = $email->getSubject();
-        $mail->From = $formatEmailAddress($email->getFrom());
-        $mail->To = $formatEmailAddress($email->getTo());
-        $mail->CC = $formatEmailAddress($email->getCc());
-        $mail->BCC = $formatEmailAddress($email->getBcc());
-        $mail->ReplyTo = $email->getReplyTo();
+        $mail->From = self::formatEmailAddress($email->getFrom());
+        $mail->To = self::formatEmailAddress($email->getTo());
+        $mail->CC = self::formatEmailAddress($email->getCc());
+        $mail->BCC = self::formatEmailAddress($email->getBcc());
+        $mail->ReplyTo = self::formatEmailAddress($email->getReplyTo());
         $mail->Headers = $email->getSwiftowner()->getHeaders()->toString();
 
         // Ensure we can at least render template if any
@@ -68,6 +58,27 @@ class CapturedEmail extends DataObject
         }
         $mail->write();
 
+    }
+
+    protected static function formatEmailAddress(array $emails): string
+    {
+        $return = '';
+        if(is_string($emails)) {
+            return $emails;
+        } elseif(is_array($emails)) {
+            foreach ($emails as $address => $title) {
+                if (is_numeric($address)) {
+                    $address = $title;
+                    $title = '';
+                }
+                $return .= "$address";
+                if ($title) {
+                    $return .= " <$title>";
+                }
+                $return .= ", ";
+            }
+        }
+        return trim(trim(trim($return), ','));
     }
 
     private static $table_name = 'CapturedEmail';
@@ -143,7 +154,7 @@ class CapturedEmail extends DataObject
                     <label class="form__field-label">Email Content</label>
                     <iframe
                         style="display: block; width: 500px; margin-left: auto!important; margin-right: auto!important; height: 300px; border: 1px solid #ccc;"
-                        srcdoc="'.Convert::raw2att($this->makeLinksClickable($this->Content)).'">
+                        srcdoc="' . Convert::raw2att($this->makeLinksClickable($this->Content)) . '">
                     </iframe>
                 </div>
                 '

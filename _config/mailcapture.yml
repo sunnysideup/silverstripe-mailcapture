@@ -4,7 +4,7 @@ After: emailconfig
 ---
 SilverStripe\Core\Injector\Injector:
   SilverStripe\Control\Email\Email:
-    class: Sunnysideup\MailCapture\Control\Email\CaptureMailer
+    class: Sunnysideup\MailCapture\Email\CaptureMailer
     properties:
       # Set to FALSE to enable pass through of emails without logging
       recordEmails: TRUE

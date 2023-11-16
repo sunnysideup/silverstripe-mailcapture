@@ -17,7 +17,7 @@ use Symfony\Component\Mime\Rawowner;
  * @author marcus@silverstripe.com.au
  * @license BSD License http://silverstripe.org/bsd-license/
  */
-class CaptureMailer extends Extension
+class CaptureMailer extends Email
 {
     public function setRecordEmails(bool $bool)
     {
@@ -55,7 +55,7 @@ class CaptureMailer extends Extension
     {
         if ($this->recordEmails) {
             $owner = $this->getOwner();
-            $mail = CapturedEmail::record_email($owner);
+            CapturedEmail::record_email($owner);
         }
     }
 }
