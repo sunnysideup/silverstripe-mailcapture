@@ -2,14 +2,9 @@
 Name: mailcapture
 After: emailconfig
 ---
-SilverStripe\Core\Injector\Injector:
-  SilverStripe\Control\Email\Email:
-    class: Sunnysideup\MailCapture\Email\CaptureMailer
-    properties:
-      # Set to FALSE to enable pass through of emails without logging
-      recordEmails: TRUE
-      # Set to TRUE to send emails, uses the configured SwiftMailer
-      sendMailOutbound: TRUE
+SilverStripe\Control\Email\Email:
+  extensions:
+    - Sunnysideup\MailCapture\Email\CaptureEmailExtension
 
 SilverStripe\Control\Director:
   rules:

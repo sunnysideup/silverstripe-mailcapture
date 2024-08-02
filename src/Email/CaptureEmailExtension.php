@@ -3,6 +3,7 @@
 namespace Sunnysideup\MailCapture\Email;
 
 use SilverStripe\Control\Email\Email;
+use SilverStripe\ORM\DataExtension;
 use Symfony\Component\Mailer\Mailer;
 
 use SilverStripe\Control\Email\SwiftMailer;
@@ -17,34 +18,8 @@ use Symfony\Component\Mime\Rawowner;
  * @author marcus@silverstripe.com.au
  * @license BSD License http://silverstripe.org/bsd-license/
  */
-class CaptureMailer extends Email
+class CaptureEmailExtension extends DataExtension
 {
-    public function setRecordEmails(bool $bool)
-    {
-        $this->recordEmails = $bool;
-    }
-
-    public function setSendMailOutbound(bool $bool)
-    {
-        $this->sendMailOutbound = $bool;
-    }
-
-    /**
-     * Do we capture emails in the system?
-     *
-     * @var boolean
-     */
-    protected $recordEmails = true;
-
-    /**
-     * do we send out emails for real?
-     * @var bool
-     */
-    protected $sendMailOutbound = true;
-
-
-    protected $send;
-
     /**
      * Undocumented function
      *
@@ -53,9 +28,7 @@ class CaptureMailer extends Email
      */
     public function updateGetData($data): void
     {
-        if ($this->recordEmails) {
-            $owner = $this->getOwner();
-            CapturedEmail::record_email($owner);
-        }
+        $owner = $this->getOwner();
+        CapturedEmail::record_email($owner, $data);
     }
 }

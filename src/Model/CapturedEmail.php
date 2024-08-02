@@ -21,20 +21,18 @@ class CapturedEmail extends DataObject
     protected static $emails_send = [];
     protected static $shut = [];
 
-    public static function record_email(Email $email)
+    public static function record_email(Email $email, $data)
     {
         // function for processing from,to, cc, bcc
 
 
         $mail = CapturedEmail::create();
-        $mail->registerShutdownFunction();
         $mail->Subject = $email->getSubject();
         $mail->From = self::formatEmailAddress($email->getFrom());
         $mail->To = self::formatEmailAddress($email->getTo());
         $mail->CC = self::formatEmailAddress($email->getCc());
         $mail->BCC = self::formatEmailAddress($email->getBcc());
         $mail->ReplyTo = self::formatEmailAddress($email->getReplyTo());
-        $mail->Headers = $email->getSwiftowner()->getHeaders()->toString();
 
         // Ensure we can at least render template if any
         $htmlTemplate = $email->getHTMLTemplate();
@@ -43,12 +41,12 @@ class CapturedEmail extends DataObject
         $plainContent = $htmlContent = '';
         // use html content with html template
         if ($htmlTemplate) {
-            $htmlContent = $email->renderWith($htmlTemplate);
+            $htmlContent = $data->renderWith($htmlTemplate);
             $mail->Content = html_entity_decode($htmlContent);
         }
         // use plain content with plain template
         elseif ($plainTemplate) {
-            $plainContent = $email->renderWith($plainTemplate);
+            $plainContent = $data->renderWith($plainTemplate);
             $mail->PlainText = $plainContent;
         }
         // default to same behaviour a prior to above implementation for templates so
@@ -67,13 +65,9 @@ class CapturedEmail extends DataObject
             return $emails;
         } elseif(is_array($emails)) {
             foreach ($emails as $address => $title) {
-                if (is_numeric($address)) {
-                    $address = $title;
-                    $title = '';
-                }
-                $return .= "$address";
+                $return .= $title->getName();
                 if ($title) {
-                    $return .= " <$title>";
+                    $return .= " <".$title->getAddress().">";
                 }
                 $return .= ", ";
             }
