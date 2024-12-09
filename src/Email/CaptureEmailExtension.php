@@ -15,8 +15,7 @@ use Symfony\Component\Mime\Rawowner;
 /**
  * A mailer that can be used to capture emails instead of sending them out
  *
- * @author marcus@silverstripe.com.au
- * @license BSD License http://silverstripe.org/bsd-license/
+ * @property Email|CaptureEmailExtension $owner
  */
 class CaptureEmailExtension extends DataExtension
 {

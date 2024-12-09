@@ -7,8 +7,8 @@ use Sunnysideup\MailCapture\Form\ViewEmailButton;
 use Sunnysideup\MailCapture\Model\CapturedEmail;
 
 /**
- * @author marcus@silverstripe.com.au
- * @license BSD License http://silverstripe.org/bsd-license/
+ * Class \Sunnysideup\MailCapture\Controller\MailCaptureAdmin
+ *
  */
 class MailCaptureAdmin extends ModelAdmin
 {

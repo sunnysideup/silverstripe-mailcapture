@@ -13,8 +13,19 @@ use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\Security\Security;
 
 /**
- * @author marcus@silverstripe.com.au
- * @license BSD License http://silverstripe.org/bsd-license/
+ * Class \Sunnysideup\MailCapture\Model\CapturedEmail
+ *
+ * @property string $From
+ * @property string $To
+ * @property string $CC
+ * @property string $BCC
+ * @property string $ReplyTo
+ * @property string $Subject
+ * @property string $Headers
+ * @property string $Content
+ * @property string $PlainText
+ * @property bool $Success
+ * @property string $Error
  */
 class CapturedEmail extends DataObject
 {
