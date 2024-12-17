@@ -3,11 +3,11 @@
 namespace Sunnysideup\MailCapture\Email;
 
 use SilverStripe\Control\Email\Email;
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 use Symfony\Component\Mailer\Mailer;
 
 use SilverStripe\Control\Email\SwiftMailer;
-use SilverStripe\Core\Extension;
+
 use Sunnysideup\MailCapture\Model\CapturedEmail;
 use Symfony\Component\Mailer\Envelope;
 use Symfony\Component\Mime\Rawowner;
@@ -17,7 +17,7 @@ use Symfony\Component\Mime\Rawowner;
  *
  * @property Email|CaptureEmailExtension $owner
  */
-class CaptureEmailExtension extends DataExtension
+class CaptureEmailExtension extends Extension
 {
     /**
      * Undocumented function
