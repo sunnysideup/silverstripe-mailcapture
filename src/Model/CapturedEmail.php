@@ -15,17 +15,24 @@ use SilverStripe\Security\Security;
 /**
  * Class \Sunnysideup\MailCapture\Model\CapturedEmail
  *
- * @property string $From
- * @property string $To
- * @property string $CC
- * @property string $BCC
- * @property string $ReplyTo
- * @property string $Subject
- * @property string $Headers
- * @property string $Content
- * @property string $PlainText
+ * @property ?string $From
+ * @property ?string $To
+ * @property ?string $CC
+ * @property ?string $BCC
+ * @property ?string $ReplyTo
+ * @property ?string $Subject
+ * @property ?string $Headers
+ * @property ?string $Content
+ * @property ?string $PlainText
  * @property bool $Success
- * @property string $Error
+ * @property ?string $Error
+ * @mixin FileLinkTracking
+ * @mixin AssetControlExtension
+ * @mixin SiteTreeLinkTracking
+ * @mixin VersionedStateExtension
+ * @mixin RecursivePublishable
+ * @mixin DataObjectExtension
+ * @mixin FixBooleanSearchAsExtension
  */
 class CapturedEmail extends DataObject
 {
