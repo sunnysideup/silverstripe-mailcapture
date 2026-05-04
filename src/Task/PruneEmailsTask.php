@@ -23,6 +23,7 @@ class PruneEmailsTask extends BuildTask
             echo "Deleting " . $list->count() . " captured emails (if ?confirm get var is set)<br/>\n";
             $list->removeAll();
         }
+
         return Command::SUCCESS;
     }
 }
