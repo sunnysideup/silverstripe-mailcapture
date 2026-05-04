@@ -2,6 +2,7 @@
 
 namespace Sunnysideup\MailCapture\Controller;
 
+use Override;
 use SilverStripe\Admin\ModelAdmin;
 use Sunnysideup\MailCapture\Form\ViewEmailButton;
 use Sunnysideup\MailCapture\Model\CapturedEmail;
@@ -20,12 +21,14 @@ class MailCaptureAdmin extends ModelAdmin
         CapturedEmail::class,
     ];
 
+    #[Override]
     protected function init()
     {
         parent::init();
         $this->showImportForm = false;
     }
 
+    #[Override]
     public function getEditForm($id = null, $fields = null)
     {
         $form = parent::getEditForm($id, $fields);

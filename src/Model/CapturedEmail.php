@@ -2,6 +2,7 @@
 
 namespace Sunnysideup\MailCapture\Model;
 
+use Override;
 use SilverStripe\Control\Email\Email;
 use SilverStripe\Core\Convert;
 use SilverStripe\ORM\DataObject;
@@ -132,6 +133,7 @@ class CapturedEmail extends DataObject
 
     private static $default_sort = 'ID DESC';
 
+    #[Override]
     public function canView($member = null)
     {
         if (!$member || !($member instanceof Member) || is_numeric($member)) {
@@ -145,21 +147,25 @@ class CapturedEmail extends DataObject
         return parent::canView($member);
     }
 
+    #[Override]
     public function canEdit($member = null)
     {
         return false;
     }
 
+    #[Override]
     public function canDelete($member = null)
     {
         return false;
     }
 
+    #[Override]
     public function canCreate($member = null, $context = [])
     {
         return false;
     }
 
+    #[Override]
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
