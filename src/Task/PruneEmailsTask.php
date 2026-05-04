@@ -2,6 +2,9 @@
 
 namespace Sunnysideup\MailCapture\BuildTask;
 
+use Symfony\Component\Console\Input\InputInterface;
+use SilverStripe\PolyExecution\PolyOutput;
+use Symfony\Component\Console\Command\Command;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\Security\Permission;
 use Sunnysideup\MailCapture\Model\CapturedEmail;
@@ -12,7 +15,7 @@ use Sunnysideup\MailCapture\Model\CapturedEmail;
  */
 class PruneEmailsTask extends BuildTask
 {
-    public function run($request)
+    protected function execute(InputInterface $input, PolyOutput $output): int
     {
         if (Permission::check('ADMIN')) {
             $since = date('Y-m-d H:i:s', strtotime('-1 month'));
@@ -20,5 +23,6 @@ class PruneEmailsTask extends BuildTask
             echo "Deleting " . $list->count() . " captured emails (if ?confirm get var is set)<br/>\n";
             $list->removeAll();
         }
+        return Command::SUCCESS;
     }
 }

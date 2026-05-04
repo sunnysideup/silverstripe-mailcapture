@@ -2,9 +2,9 @@
 
 namespace Sunnysideup\MailCapture\Form;
 
+use SilverStripe\Model\ArrayData;
 use SilverStripe\Control\Controller;
 use SilverStripe\Forms\GridField\GridField_ColumnProvider;
-use SilverStripe\View\ArrayData;
 
 class ViewEmailButton implements GridField_ColumnProvider
 {

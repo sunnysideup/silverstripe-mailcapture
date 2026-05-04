@@ -33,6 +33,7 @@ class CapturedEmailController extends Controller implements PermissionProvider
                 return ['Email' => $email];
             }
         }
+
         return null;
     }
 }
