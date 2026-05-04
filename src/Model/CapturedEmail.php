@@ -37,6 +37,7 @@ use SilverStripe\Security\Security;
 class CapturedEmail extends DataObject
 {
     protected static $emails_send = [];
+
     protected static $shut = [];
 
     public static function record_email(Email $email, $data)
@@ -55,15 +56,15 @@ class CapturedEmail extends DataObject
         // Ensure we can at least render template if any
         $htmlTemplate = $email->getHTMLTemplate();
         $plainTemplate = $email->getPlainTemplate();
-
-        $plainContent = $htmlContent = '';
+        $plainContent = '';
+        $htmlContent = '';
         // use html content with html template
-        if ($htmlTemplate) {
+        if ($htmlTemplate !== '' && $htmlTemplate !== '0') {
             $htmlContent = $data->renderWith($htmlTemplate);
-            $mail->Content = html_entity_decode($htmlContent);
+            $mail->Content = html_entity_decode((string) $htmlContent);
         }
         // use plain content with plain template
-        elseif ($plainTemplate) {
+        elseif ($plainTemplate !== '' && $plainTemplate !== '0') {
             $plainContent = $data->renderWith($plainTemplate);
             $mail->PlainText = $plainContent;
         }
@@ -72,6 +73,7 @@ class CapturedEmail extends DataObject
         else {
             $mail->Content = $email->getBody();
         }
+
         $mail->write();
 
     }
@@ -87,15 +89,17 @@ class CapturedEmail extends DataObject
                 if ($title) {
                     $return .= " <".$title->getAddress().">";
                 }
+
                 $return .= ", ";
             }
         }
+
         return trim(trim(trim($return), ','));
     }
 
     private static $table_name = 'CapturedEmail';
 
-    private static $db = array(
+    private static $db = [
         'From'            => 'Varchar(128)',
         'To'              => 'Varchar(128)',
         'CC'              => 'Varchar(128)',
@@ -107,23 +111,24 @@ class CapturedEmail extends DataObject
         'PlainText'       => 'Text',
         'Success'         => 'Boolean',
         'Error'           => 'Text',
-    );
+    ];
 
-    private static $summary_fields = array(
+    private static $summary_fields = [
         'Created',
         'Subject',
         'From',
         'To',
         'CC',
         'BCC',
-    );
-    private static $searchable_fields = array(
+    ];
+
+    private static $searchable_fields = [
         'Subject',
         'From',
         'To',
         'CC',
         'BCC',
-    );
+    ];
 
     private static $default_sort = 'ID DESC';
 
@@ -132,7 +137,8 @@ class CapturedEmail extends DataObject
         if (!$member || !($member instanceof Member) || is_numeric($member)) {
             $member = Security::getCurrentUser();
         }
-        if ($member && Permission::checkMember($member, array("ADMIN", "CMS_ACCESS_MailCaptureAdmin"))) {
+
+        if ($member && Permission::checkMember($member, ["ADMIN", "CMS_ACCESS_MailCaptureAdmin"])) {
             return true;
         }
 
@@ -206,17 +212,17 @@ class CapturedEmail extends DataObject
         $ret = preg_replace(
             "#(^|[\n ])((www|ftp)\.[\w\#$%&~/.\-;:=,?@\[\]+]*)#is",
             "\\1<a href=\"http://\\2\" target=\"_blank\" rel=\"nofollow\">\\2</a>",
-            $ret
+            (string) $ret
         );
 
         // Replace Email Addresses
         $ret = preg_replace(
             "#(^|[\n ])([a-z0-9&\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i",
             "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>",
-            $ret
+            (string) $ret
         );
 
-        return substr($ret, 1);
+        return substr((string) $ret, 1);
 
     }
 
@@ -233,6 +239,7 @@ class CapturedEmail extends DataObject
         } else {
             $this->Success = true;
         }
+
         $this->write();
     }
 

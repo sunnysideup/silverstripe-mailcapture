@@ -13,12 +13,14 @@ use Sunnysideup\MailCapture\Model\CapturedEmail;
 class MailCaptureAdmin extends ModelAdmin
 {
     private static $menu_title = 'Email Logs';
-    private static $url_segment = 'emaillogs';
-    private static $managed_models = array(
-        CapturedEmail::class,
-    );
 
-    public function init()
+    private static $url_segment = 'emaillogs';
+
+    private static $managed_models = [
+        CapturedEmail::class,
+    ];
+
+    protected function init()
     {
         parent::init();
         $this->showImportForm = false;
@@ -36,6 +38,7 @@ class MailCaptureAdmin extends ModelAdmin
                 $grid->getConfig()->addComponent(new ViewEmailButton());
             }
         }
+
         return $form;
     }
 

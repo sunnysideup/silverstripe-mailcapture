@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sunnysideup\MailCapture\Controller;
 
 use SilverStripe\Control\Controller;
-use SilverStripe\ORM\DataList;
 use SilverStripe\Security\PermissionProvider;
 use Sunnysideup\MailCapture\Model\CapturedEmail;
 
@@ -13,24 +14,25 @@ use Sunnysideup\MailCapture\Model\CapturedEmail;
  */
 class CapturedEmailController extends Controller implements PermissionProvider
 {
-    private static $allowed_actions = array('view' => 'CMS_ACCESS_MailCaptureAdmin');
+    private static $allowed_actions = ['view' => 'CMS_ACCESS_MailCaptureAdmin'];
 
     public function providePermissions()
     {
-        return array(
+        return [
             'CMS_ACCESS_MailCaptureAdmin' => 'View MailCapture records'
-        );
+        ];
     }
 
     public function view()
     {
         $id = (int) $this->getRequest()->param('ID');
 
-        if ($id) {
+        if ($id !== 0) {
             $email = CapturedEmail::get()->byID($id);
             if ($email) {
-                return array('Email' => $email);
+                return ['Email' => $email];
             }
         }
+        return null;
     }
 }
