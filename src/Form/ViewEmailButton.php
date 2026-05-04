@@ -2,9 +2,9 @@
 
 namespace Sunnysideup\MailCapture\Form;
 
+use SilverStripe\Model\ArrayData;
 use SilverStripe\Control\Controller;
 use SilverStripe\Forms\GridField\GridField_ColumnProvider;
-use SilverStripe\View\ArrayData;
 
 class ViewEmailButton implements GridField_ColumnProvider
 {
@@ -17,28 +17,29 @@ class ViewEmailButton implements GridField_ColumnProvider
 
     public function getColumnsHandled($field)
     {
-        return array('Actions');
+        return ['Actions'];
     }
 
     public function getColumnContent($field, $record, $col)
     {
         if($record->canView()) {
-            $data = new ArrayData(array(
+            $data = ArrayData::create([
                 'Link' => Controller::join_links('CapturedEmailController', 'view', $record->ID)
-            ));
+            ]);
             return $data->renderWith('ViewEmailButton');
         }
+
         return '';
     }
 
     public function getColumnAttributes($field, $record, $col)
     {
-        return array('class' => 'col-buttons');
+        return ['class' => 'col-buttons'];
     }
 
     public function getColumnMetadata($gridField, $col)
     {
-        return array('title' => null);
+        return ['title' => null];
     }
 
 }

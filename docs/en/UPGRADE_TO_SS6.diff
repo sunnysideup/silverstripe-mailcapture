@@ -1,0 +1,178 @@
+diff --git a/composer.json b/composer.json
+index bba3442..aa84516 100644
+--- a/composer.json
++++ b/composer.json
+@@ -19,7 +19,7 @@
+     }
+   ],
+   "require": {
+-    "silverstripe/framework": "~5.0"
++    "silverstripe/framework": "^6.0"
+   },
+   "extra": {
+     "branch-alias": {
+diff --git a/src/Controller/CapturedEmailController.php b/src/Controller/CapturedEmailController.php
+index 9543c61..e0154c0 100644
+--- a/src/Controller/CapturedEmailController.php
++++ b/src/Controller/CapturedEmailController.php
+@@ -33,6 +33,7 @@ class CapturedEmailController extends Controller implements PermissionProvider
+                 return ['Email' => $email];
+             }
+         }
++
+         return null;
+     }
+ }
+diff --git a/src/Controller/MailCaptureAdmin.php b/src/Controller/MailCaptureAdmin.php
+index d0cdf42..c3d7772 100644
+--- a/src/Controller/MailCaptureAdmin.php
++++ b/src/Controller/MailCaptureAdmin.php
+@@ -2,6 +2,7 @@
+ 
+ namespace Sunnysideup\MailCapture\Controller;
+ 
++use Override;
+ use SilverStripe\Admin\ModelAdmin;
+ use Sunnysideup\MailCapture\Form\ViewEmailButton;
+ use Sunnysideup\MailCapture\Model\CapturedEmail;
+@@ -20,12 +21,14 @@ class MailCaptureAdmin extends ModelAdmin
+         CapturedEmail::class,
+     ];
+ 
++    #[Override]
+     protected function init()
+     {
+         parent::init();
+         $this->showImportForm = false;
+     }
+ 
++    #[Override]
+     public function getEditForm($id = null, $fields = null)
+     {
+         $form = parent::getEditForm($id, $fields);
+diff --git a/src/Form/ViewEmailButton.php b/src/Form/ViewEmailButton.php
+index d76b23a..d371fdf 100644
+--- a/src/Form/ViewEmailButton.php
++++ b/src/Form/ViewEmailButton.php
+@@ -2,9 +2,9 @@
+ 
+ namespace Sunnysideup\MailCapture\Form;
+ 
++use SilverStripe\Model\ArrayData;
+ use SilverStripe\Control\Controller;
+ use SilverStripe\Forms\GridField\GridField_ColumnProvider;
+-use SilverStripe\View\ArrayData;
+ 
+ class ViewEmailButton implements GridField_ColumnProvider
+ {
+diff --git a/src/Model/CapturedEmail.php b/src/Model/CapturedEmail.php
+index 2bc8594..1d763e3 100644
+--- a/src/Model/CapturedEmail.php
++++ b/src/Model/CapturedEmail.php
+@@ -2,6 +2,7 @@
+ 
+ namespace Sunnysideup\MailCapture\Model;
+ 
++use Override;
+ use SilverStripe\Control\Email\Email;
+ use SilverStripe\Core\Convert;
+ use SilverStripe\ORM\DataObject;
+@@ -132,6 +133,7 @@ class CapturedEmail extends DataObject
+ 
+     private static $default_sort = 'ID DESC';
+ 
++    #[Override]
+     public function canView($member = null)
+     {
+         if (!$member || !($member instanceof Member) || is_numeric($member)) {
+@@ -145,21 +147,25 @@ class CapturedEmail extends DataObject
+         return parent::canView($member);
+     }
+ 
++    #[Override]
+     public function canEdit($member = null)
+     {
+         return false;
+     }
+ 
++    #[Override]
+     public function canDelete($member = null)
+     {
+         return false;
+     }
+ 
++    #[Override]
+     public function canCreate($member = null, $context = [])
+     {
+         return false;
+     }
+ 
++    #[Override]
+     public function getCMSFields()
+     {
+         $fields = parent::getCMSFields();
+diff --git a/src/Task/PruneEmailsTask.php b/src/Task/PruneEmailsTask.php
+index 7938024..c494cb7 100644
+--- a/src/Task/PruneEmailsTask.php
++++ b/src/Task/PruneEmailsTask.php
+@@ -1,10 +1,16 @@
+ <?php
+ 
++declare(strict_types=1);
++
+ namespace Sunnysideup\MailCapture\BuildTask;
+ 
+ use SilverStripe\Dev\BuildTask;
++use SilverStripe\PolyExecution\PolyOutput;
+ use SilverStripe\Security\Permission;
+ use Sunnysideup\MailCapture\Model\CapturedEmail;
++use Symfony\Component\Console\Command\Command;
++use Symfony\Component\Console\Input\InputInterface;
++use Symfony\Component\Console\Input\InputOption;
+ 
+ /**
+  * @author <marcus@silverstripe.com.au>
+@@ -12,13 +18,38 @@ use Sunnysideup\MailCapture\Model\CapturedEmail;
+  */
+ class PruneEmailsTask extends BuildTask
+ {
+-    public function run($request)
++    protected static string $commandName = 'prune-emails';
++
++    protected string $title = 'Prune old captured emails';
++
++    protected static string $description = 'Deletes captured emails older than 1 month';
++
++    protected function execute(InputInterface $input, PolyOutput $output): int
+     {
+-        if (Permission::check('ADMIN')) {
+-            $since = date('Y-m-d H:i:s', strtotime('-1 month'));
+-            $list = CapturedEmail::get()->filter(['Created:LessThan' => $since]);
+-            echo "Deleting " . $list->count() . " captured emails (if ?confirm get var is set)<br/>\n";
++        if (!Permission::check('ADMIN')) {
++            $output->writeln('<error>You must be an admin to run this task</error>');
++            return Command::FAILURE;
++        }
++
++        $since = date('Y-m-d H:i:s', strtotime('-1 month'));
++        $list = CapturedEmail::get()->filter(['Created:LessThan' => $since]);
++        $count = $list->count();
++
++        if ($input->getOption('confirm')) {
++            $output->writeln("Deleting {$count} captured emails...");
+             $list->removeAll();
++            $output->writeln('<info>Emails deleted successfully</info>');
++        } else {
++            $output->writeln("Would delete {$count} captured emails. Use --confirm to actually delete them.");
+         }
++
++        return Command::SUCCESS;
++    }
++
++    public function getOptions(): array
++    {
++        return [
++            new InputOption('confirm', 'c', InputOption::VALUE_NONE, 'Confirm deletion of emails'),
++        ];
+     }
+ }
