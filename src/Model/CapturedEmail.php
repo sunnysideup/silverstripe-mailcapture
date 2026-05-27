@@ -26,13 +26,13 @@ use SilverStripe\Security\Security;
  * @property ?string $PlainText
  * @property bool $Success
  * @property ?string $Error
- * @mixin FileLinkTracking
  * @mixin AssetControlExtension
- * @mixin SiteTreeLinkTracking
- * @mixin RecursivePublishable
- * @mixin VersionedStateExtension
  * @mixin DataObjectExtension
+ * @mixin FileLinkTracking
  * @mixin FixBooleanSearchAsExtension
+ * @mixin RecursivePublishable
+ * @mixin SiteTreeLinkTracking
+ * @mixin VersionedStateExtension
  */
 class CapturedEmail extends DataObject
 {
