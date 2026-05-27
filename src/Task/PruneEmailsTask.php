@@ -1,6 +1,6 @@
 <?php
 
-namespace Sunnysideup\MailCapture\BuildTask;
+namespace Sunnysideup\MailCapture\Tasks;
 
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\Security\Permission;
@@ -12,6 +12,11 @@ use Sunnysideup\MailCapture\Model\CapturedEmail;
  */
 class PruneEmailsTask extends BuildTask
 {
+    protected $title = 'Prune captured emails';
+    protected $description = 'Deletes captured emails older than 1 month.';
+
+    private static $segment = 'pruneemailstask';
+
     public function run($request)
     {
         if (Permission::check('ADMIN')) {
