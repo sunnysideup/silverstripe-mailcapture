@@ -176,7 +176,7 @@ class CapturedEmail extends DataObject
                 '
                 <div style="width: 100%; padding-bottom: 2rem;">
                     <label class="form__field-label">Email Content</label>
-                    <iframe
+                    <iframe sandbox=""
                         style="display: block; width: 500px; margin-left: auto!important; margin-right: auto!important; height: 300px; border: 1px solid #ccc;"
                         srcdoc="' . Convert::raw2att($this->makeLinksClickable($this->Content)) . '">
                     </iframe>
